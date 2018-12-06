@@ -1,3 +1,4 @@
+TAX = 0.076
 def main():
     menu()
 def read():
@@ -10,27 +11,35 @@ def read():
         aryTemp = bookNum.split(",")
         books.append(aryTemp)
     return books
-def write(selcetion,quantity,subTotal,books):
-    username = name()
-    write_file = open (f"{username}.txt","w")
-    price = float(books[selcetion][2] * quantity)
-    book =(f"{books[selection], X {quantity}, = [price] ")
+def write(selection,quantity,subTotal,books,userName,Total,price):
+    
+    write_file = open (f"{userName}.txt","w")
+    ticket =(f"{books[selection]}, X {quantity}, = {subTotal} \n" )
+    taxAmt=(Total*TAX)
+    finalTotal=(taxAmt + Total)
+    write_file.write(ticket)
+    write_file.write(str(Total)+"\n")
+    write_file.write(str(taxAmt)+"\n")
+    write_file.write(str(finalTotal))
+    return write_file
 def cart(selection,quantity,books):
     
     print(f"QTY: {quantity} ")
     print (f"Item: {books[selection][1]}")
-    print(f"Price: {books[selection][2]}")
     price = float(books[selection][2])
+    print(f"Price: {price}")
+    
     subTotal = float(price * quantity)
-    print(subTotal)
-    return subTotal
+    print(round(subTotal,2))
+    return subTotal, price
 
 
 def name():
     userName= str(input("What is your name?"))
     return userName
 def menu():
-    subTotal = 0
+    basket = 0
+    Total= 0
     print("WELCOME TO FROGGY'S BOOK STORE")
     userName = name()
     books = read()
@@ -43,9 +52,16 @@ def menu():
             print (listBooks)
             listNum+=1
         selection = int(input("Which would you like ?"))
+        selection -= 1
         quantity = int(input(f"You chose{books[selection][1]} How many would you like?"))
-        subTotal += cart(selection,quantity,books)
+        basket = cart(selection,quantity,books)
+        subTotal= (basket[0])
+        price = (basket[1])
+        #print(price,subTotal)
+        Total+= subTotal
         answer = str.upper(input("Would you like another? Y/N"))
-        write(selection,quantity,subTotal,books)
+        
+        write_file =write(selection,quantity,subTotal,books,userName,Total,price)
+        write_file.close()
 
 main()
