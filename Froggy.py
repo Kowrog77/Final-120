@@ -8,20 +8,26 @@ def read():
     books=[]
     for bookNum in bookList:
         bookNum = bookNum.strip()
-        aryTemp = bookNum.split(",")
+        aryTemp = bookNum.split(,)
         books.append(aryTemp)
     return books
-def write(selection,quantity,subTotal,books,userName,Total,price):
+def write(write_file,selection,quantity,subTotal,books,userName,Total,price):
     
-    write_file = open (f"{userName}.txt","w")
-    ticket =(f"{books[selection]}, X {quantity}, = {subTotal} \n" )
+    ticket =(f"{quantity},                     {books[selection][1]},                     {books[selection][2]}\n" )
     taxAmt=(Total*TAX)
+    
+    write_file.write("Thank you" +(userName)+"for shopping with FROGGY'S BOOK STORE\n")
+    write_file.write("Qty                     Item                                  Price\n")
+    write_file.write("Order: "+str(ticket))
+    write_file.write("-----------------------------\n")
+    write_file.write("SubTotal: "+str(Total)+"\n")
+    write_file.write("Tax: "+str(round(taxAmt,2))+"\n")
+    write_file.write("-----------------------------\n")
+    return taxAmt
+def finalTotal(write_file,Total,taxAmt):
+    
     finalTotal=(taxAmt + Total)
-    write_file.write(ticket)
-    write_file.write(str(Total)+"\n")
-    write_file.write(str(taxAmt)+"\n")
-    write_file.write(str(finalTotal))
-    return write_file
+    write_file.write("Total: "+str(round(finalTotal,2))+"\n")
 def cart(selection,quantity,books):
     
     print(f"QTY: {quantity} ")
@@ -30,7 +36,7 @@ def cart(selection,quantity,books):
     print(f"Price: {price}")
     
     subTotal = float(price * quantity)
-    print(round(subTotal,2))
+    print("SubTotal:",round(subTotal,2))
     return subTotal, price
 
 
@@ -38,17 +44,19 @@ def name():
     userName= str(input("What is your name?"))
     return userName
 def menu():
+    
     basket = 0
     Total= 0
     print("WELCOME TO FROGGY'S BOOK STORE")
     userName = name()
     books = read()
     answer =("Y")
+    write_file = open (f"{userName}.txt","w")
     while (answer == ("Y")):
         print("Here are the books we have:")
         listNum = 1 
         for book in books:
-            listBooks = f" {listNum}) {book[0]},{book[1]},"
+            listBooks = (f" {listNum}) {book[0]},{book[1]},")
             print (listBooks)
             listNum+=1
         selection = int(input("Which would you like ?"))
@@ -60,8 +68,9 @@ def menu():
         #print(price,subTotal)
         Total+= subTotal
         answer = str.upper(input("Would you like another? Y/N"))
-        
-        write_file =write(selection,quantity,subTotal,books,userName,Total,price)
-        write_file.close()
-
+    
+        taxAmt =write(write_file,selection,quantity,subTotal,books,userName,Total,price)
+    finalTotal(write_file,Total,taxAmt)
+    print(f"Your Rece is in a txt file named {userName}")
+    write_file.close()
 main()
